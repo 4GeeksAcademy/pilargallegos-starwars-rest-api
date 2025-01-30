@@ -6,9 +6,11 @@ db = SQLAlchemy()
 @dataclass
 class User(db.Model):
     __tablename__ = 'user'
-    id:int = db.Column(db.Integer, primary_key=True, index=True, nullable=False)
-    name:str = db.Column(db.String(30), nullable=False)
-    password:str = db.Column(db.String(30), nullable=False, unique=True)
+    id:int = db.Column(db.Integer, primary_key = True)
+    name:str = db.Column(db.String(30), nullable = False)
+    email:str = db.Column(db.String(120), unique = True)
+    password:str = db.Column(db.String(30), nullable = False, unique=True)
+    is_active:bool = db.Column(db.Boolean(), unique = False)
     
 class FavoritesType(enum.Enum):
     SPECIES = "SPECIES"
@@ -52,8 +54,8 @@ class People(db.Model):
 #     email = db.Column(db.String(120), unique=True, nullable=False)
 #     password = db.Column(db.String(80), unique=False, nullable=False)
 #     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-#     def __repr__(self):
-#         return '<User %r>' % self.username
+    def __repr__(self):
+         return '<User %r>' % self.username
 #     def serialize(self):
 #         return {
 #             "id": self.id,

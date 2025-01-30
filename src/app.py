@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Species, Planets, People
 #from models import Person
 
 app = Flask(__name__)
@@ -36,14 +36,70 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
-
+@app.route('/user', methods = ['GET'])
+def get_all_users():
+    user = User.query.all()
     response_body = {
-        "msg": "Hello, this is your GET /user response "
+        "content": user
     }
-
     return jsonify(response_body), 200
+
+@app.route('/user/<int:user_id>', methods = ['GET'])
+def handle_get_user(user_id):
+    user = User.query.get(user_id)
+    response_body = {
+        "content": user
+    }
+    return jsonify(response_body), 200
+
+@app.route('/species', methods = ['GET'])
+def get_all_species():
+    species_list = Species.query.all()
+    response_body = {
+        "content": species_list
+    }
+    return jsonify(response_body), 200
+
+@app.route('/species/<int:specie_uid>', methods = ['GET'])
+def handle_get_specie(specie_id):
+    specie = Species.query.get(specie_id)
+    response_body = {
+        "content": specie
+    }
+    return jsonify(response_body), 200
+
+@app.route('/planets', methods = ['GET'])
+def get_all_planets():
+    planets_list = Planets.query.all()
+    response_body = {
+        "content": planets_list
+    }
+    return jsonify(response_body), 200
+
+@app.route('/planets/<int:planet_uid>', methods = ['GET'])
+def handle_get_planet(planet_id):
+    planet = Planets.query.get(planet_id)
+    response_body = {
+        "content": planet
+    }
+    return jsonify(response_body), 200
+
+@app.route('/people', methods = ['GET'])
+def get_all_people():
+    people_list = People.query.all()
+    response_body = {
+        "content": people_list
+    }
+    return jsonify(response_body), 200
+
+@app.route('/people/<int:person_uid>', methods = ['GET'])
+def handle_get_person(person_uid):
+    person = People.query.get(person_uid)
+    response_body = {
+        "content": person
+    }
+    return jsonify(response_body), 200
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
