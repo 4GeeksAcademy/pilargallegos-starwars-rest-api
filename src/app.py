@@ -38,9 +38,9 @@ def sitemap():
 
 @app.route('/user', methods = ['GET'])
 def get_all_users():
-    user = User.query.all()
+    user_list = User.query.all()
     response_body = {
-        "content": user
+        "content": user_list
     }
     return jsonify(response_body), 200
 
