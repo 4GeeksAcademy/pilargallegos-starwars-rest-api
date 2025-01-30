@@ -9,6 +9,7 @@ class User(db.Model):
     id:int = db.Column(db.Integer, primary_key=True, index=True, nullable=False)
     name:str = db.Column(db.String(30), nullable=False)
     password:str = db.Column(db.String(30), nullable=False, unique=True)
+    
 class FavoritesType(enum.Enum):
     SPECIES = "SPECIES"
     PLANETS = "PLANETS"
