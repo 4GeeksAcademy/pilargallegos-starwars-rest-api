@@ -52,6 +52,15 @@ def handle_get_user(user_id):
     }
     return jsonify(response_body), 200
 
+@app.route('/user/<int:user_id>', methods = ['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"message": "User deleted"}), 200
+    return jsonify({"error": "User not found"}),404
+
 @app.route('/species', methods = ['GET'])
 def get_all_species():
     species_list = Species.query.all()
@@ -60,13 +69,22 @@ def get_all_species():
     }
     return jsonify(response_body), 200
 
-@app.route('/species/<int:specie_uid>', methods = ['GET'])
-def handle_get_specie(specie_id):
-    specie = Species.query.get(specie_id)
-    response_body = {
-        "content": specie
-    }
-    return jsonify(response_body), 200
+@app.route('/species/<int:specie_uid>', methods = ['GET', 'DELETE'])
+def handle_specie(specie_uid):
+    if request.method == "DELETE":
+        specie = Species.query.get(specie_uid)        
+        if specie:
+            db.session.delete(specie)
+            db.session.commit()
+            return jsonify({"message": "Specie deleted"}), 200
+        else:
+            return jsonify({"error":"Specie not found"}),404
+    else:
+        specie = Species.query.get(specie_uid)
+        if specie:
+            return jsonify({"content": specie}), 200
+        else:    
+            return jsonify({"error": "Specie not found"}), 404
 
 @app.route('/planets', methods = ['GET'])
 def get_all_planets():
@@ -92,13 +110,22 @@ def get_all_people():
     }
     return jsonify(response_body), 200
 
-@app.route('/people/<int:person_uid>', methods = ['GET'])
-def handle_get_person(person_uid):
-    person = People.query.get(person_uid)
-    response_body = {
-        "content": person
-    }
-    return jsonify(response_body), 200
+@app.route('/people/<int:person_uid>', methods = ['GET', 'DELETE'])
+def handle_person(person_uid):
+    if request.method == "DELETE":
+        person = People.query.get(person_uid)        
+        if person:
+            db.session.delete(person)
+            db.session.commit()
+            return jsonify({"message": "Person deleted"}), 200
+        else:
+            return jsonify({"error":"Person not found"}),404
+    else:
+        person = People.query.get(person_uid)
+        if person:
+            return jsonify({"content": person}), 200
+        else:    
+            return jsonify({"error": "Person not found"}), 404
 
 @app.route('/favorites', methods =['POST'])
 def add_favorite():
@@ -119,6 +146,19 @@ def add_favorite():
     db.session.commit()
     
     return jsonify(new_favorite), 201
+
+@app.route('/favorites/<int:id>', methods = ['DELETE'])
+def delete_favorite(id):
+  favorite = Favorites.query.get(id)
+  if not favorite:
+      return jsonify({"error": "Favorite not found"}), 404
+  db.session.delete(favorite)
+  db.session.commit()
+
+  return jsonify({"message": "Favorite deleted"}), 200
+
+
+    
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
