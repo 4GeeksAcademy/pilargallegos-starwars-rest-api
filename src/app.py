@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Species, Planets, People
+from models import db, User, Species, Planets, People, Favorites
 #from models import Person
 
 app = Flask(__name__)
@@ -77,8 +77,8 @@ def get_all_planets():
     return jsonify(response_body), 200
 
 @app.route('/planets/<int:planet_uid>', methods = ['GET'])
-def handle_get_planet(planet_id):
-    planet = Planets.query.get(planet_id)
+def handle_get_planet(planet_uid):
+    planet = Planets.query.get(planet_uid)
     response_body = {
         "content": planet
     }
@@ -100,6 +100,25 @@ def handle_get_person(person_uid):
     }
     return jsonify(response_body), 200
 
+@app.route('/favorites', methods =['POST'])
+def add_favorite():
+    data = request.get_json()
+    print("Received data:", data)
+    required_fields = {"external_id", "type", "name"}
+    if not all(field in data for field in required_fields):
+        return jsonify ({"error": "Missing required fields"}), 400
+    
+    user_id=1
+    new_favorite = Favorites (
+        external_id =  data["external_id"],
+        type = data["type"],
+        name = data["name"],
+        user_id = user_id
+    )
+    db.session.add(new_favorite)
+    db.session.commit()
+    
+    return jsonify(new_favorite), 201
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ class User(db.Model):
     password:str = db.Column(db.String(30), nullable = False, unique=True)
     is_active:bool = db.Column(db.Boolean(), unique = False)
     
-class FavoritesType(enum.Enum):
+class FavoritesType(str, enum.Enum):
     SPECIES = "SPECIES"
     PLANETS = "PLANETS"
     PEOPLE = "PEOPLE"
@@ -22,9 +22,9 @@ class Favorites(db.Model):
     __tablename__ = 'favorites'
     id:int = db.Column(db.Integer, primary_key=True, index=True, nullable=False)
     user_id:int = db.Column(db.Integer, ForeignKey('user.id'),index=True, nullable=False)
-    external_id:int = db.Column(db.Integer, nullable=False)
-    type:str = db.Column(db.Enum(FavoritesType), nullable=False)
     name:str = db.Column(db.String(30), nullable=False)
+    external_id:int = db.Column(db.Integer, nullable=False)
+    type:FavoritesType = db.Column(db.Enum(FavoritesType), nullable=False)
 
 @dataclass
 class Species(db.Model):
@@ -45,8 +45,8 @@ class Planets(db.Model):
 class People(db.Model):
     __tablename__ = 'people'
     uid:int = db.Column(db.Integer, primary_key=True, unique=True, index=True, nullable=False)
-    description:str = db.Column(db.String(50), nullable=False)
     name:str = db.Column(db.String(30), nullable=False)
+    description:str = db.Column(db.String(50), nullable=False)
     homeworld:int = db.Column(db.Integer, ForeignKey('planets.uid'), nullable=False)
 
 # class User(db.Model):
@@ -54,8 +54,8 @@ class People(db.Model):
 #     email = db.Column(db.String(120), unique=True, nullable=False)
 #     password = db.Column(db.String(80), unique=False, nullable=False)
 #     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    def __repr__(self):
-         return '<User %r>' % self.username
+    # def __repr__(self):
+    #      return '<User %r>' % self.username
 #     def serialize(self):
 #         return {
 #             "id": self.id,
