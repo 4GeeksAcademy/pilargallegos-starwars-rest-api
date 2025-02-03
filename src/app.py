@@ -61,6 +61,23 @@ def delete_user(user_id):
         return jsonify({"message": "User deleted"}), 200
     return jsonify({"error": "User not found"}),404
 
+@app.route('/user', methods = ['POST'])
+def add_user():
+    data = request.get_json()
+    required_fields={"name", "email", "password"}
+    if not all(field in data for field in required_fields):
+        return jsonify({"error":"Missing required fields"}), 400
+    new_user = User (
+        id = data["id"],
+        name = data["name"],
+        email = data["email"],
+        password = data["password"]
+    )
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify(new_user), 201
+
 @app.route('/species', methods = ['GET'])
 def get_all_species():
     species_list = Species.query.all()
@@ -126,6 +143,23 @@ def handle_person(person_uid):
             return jsonify({"content": person}), 200
         else:    
             return jsonify({"error": "Person not found"}), 404
+
+@app.route('/people', methods=['POST'])
+def new_person():
+    data = request.get_json()
+    required_fields = {"uid", "name", "description", "homeworld"}
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+    new_person = People (
+        uid = data["uid"],
+        name = data["name"],
+        description = data["description"],
+        homeworld = data["homeworld"]
+    )
+    db.session.add(new_person)
+    db.session.commit()
+
+    return jsonify(new_person), 201
 
 @app.route('/favorites', methods =['POST'])
 def add_favorite():
