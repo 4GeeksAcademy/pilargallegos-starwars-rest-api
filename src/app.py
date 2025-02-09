@@ -78,6 +78,23 @@ def add_user():
 
     return jsonify(new_user), 201
 
+@app.route('/species', methods=['POST'])
+def new_specie():
+    data = request.get_json()
+    required_fields = {"uid", "description", "name", "homeworld"}
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+    new_specie = Species (
+        uid = data["uid"],
+        description = data["description"],
+        name = data["name"],
+        homeworld = data["homeworld"]
+    )
+    db.session.add(new_specie)
+    db.session.commit()
+
+    return jsonify(new_specie), 201
+
 @app.route('/species', methods = ['GET'])
 def get_all_species():
     species_list = Species.query.all()
@@ -160,6 +177,14 @@ def new_person():
     db.session.commit()
 
     return jsonify(new_person), 201
+
+@app.route('/favorites', methods =['GET'])
+def get_favorites():
+    favorite_list = Favorites.query. all()
+    response_body = {
+        "content": favorite_list
+    }
+    return jsonify(response_body), 200
 
 @app.route('/favorites', methods =['POST'])
 def add_favorite():

@@ -13,9 +13,9 @@ class User(db.Model):
     is_active:bool = db.Column(db.Boolean(), unique = False)
     
 class FavoritesType(str, enum.Enum):
-    SPECIES = "SPECIES"
-    PLANETS = "PLANETS"
-    PEOPLE = "PEOPLE"
+    SPECIES = "species"
+    PLANETS = "planets"
+    PEOPLE = "people"
 
 @dataclass
 class Favorites(db.Model):
